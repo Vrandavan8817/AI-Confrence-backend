@@ -6,7 +6,7 @@ const RegistrationSchema = new mongoose.Schema({
   dob: { type: String, required: true },
   nationality: { type: String, required: true },
   mobile: { type: String, required: true },
-  email: { type: String, required: true, unique: true },  // 👈 yaha unique
+  email: { type: String, required: true, unique: true },
   address: { type: String, required: true },
   institution: { type: String, required: true },
   designation: { type: String, required: true },
@@ -19,6 +19,22 @@ const RegistrationSchema = new mongoose.Schema({
   authors: { type: String, required: true },
   abstractText: { type: String, required: true },
   declaration: { type: Boolean, default: false },
+  
+  // File fields (added)
+  receiptFileId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  receiptFileName: { type: String, required: true },
+  abstractFileId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  abstractFileName: { type: String, required: true },
+  
+  // Timestamps (added)
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Pre-save hook to update updatedAt
+RegistrationSchema.pre('save', function(next) {
+  this.updatedAt = new Date();
+  next();
 });
 
 export default mongoose.model("Registration", RegistrationSchema);
