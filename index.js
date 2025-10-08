@@ -60,7 +60,14 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err.message);
-    process.exit(1);
+    // Retry later (do not crash immediately)
+    setTimeout(() => {
+      console.log("🔁 Retrying MongoDB connection...");
+      mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      }).catch(e => console.error("Retry failed:", e.message));
+    }, 5000);
   });
 
 mongoose.connection.on("error", (err) => {
